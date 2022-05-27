@@ -1,13 +1,18 @@
 # Auto merge dependabot PRs without PAT after all workflows passed
 
-:construction:
+CI checker action has been extracted to [kachick/wait-other-jobs](https://github.com/kachick/wait-other-jobs)
+So this repository's source code is just history archive now.
 
 ## Why?
 
 I used a way to comment "@dependabot merge". This is simple to ensure CI passed. However it requires PAT(Personal Access Token). It is all.
 So this action provides another way. It checks other builds and merging the dependabot PR with GITHUB_TOKEN not PAT.
 
-## Usage
+### Usage - new
+
+[As this](https://github.com/kachick/ruby_library_template/blob/22b655d9d12cf0d34e54353eb467b2cdeb71b4e1/.github/workflows/auto-merge-dependabot-prs.yml)
+
+## Usage - Old
 
 ```yaml
 name: Auto merge dependabot PRs
@@ -46,23 +51,3 @@ You can adjust status polling interval and merging strategy as below.
           merging-strategy: "merge" # default "squash"
 ```
 
-## TODO
-
-* Configurable updating policy: Below is the idea
-  ```typescript
-  // This is an example to get updating info. However delegating to https://github.com/dependabot/fetch-metadata/f should be robust.
-  //
-  const title = pr.title as string;
-  const match = title.match(/from (\S+) (?<before>\S+) to (?<after>\S+)$/);
-  if (!match) {
-    throw 'dependabot title format might be changed :<';
-  }
-  const before = match[1].split('.');
-  const after = match[2].split('.');
-  const isSemVerPatchLevel = before[0] === after[0] && before[1] === after[1];
-  if (isSemVerPatchLevel) {
-    merge ();
-  }
-
-  // Passing from dependabot/fetch-metadata and use it might be approvable
-  ```
